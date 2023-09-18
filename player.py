@@ -4,9 +4,10 @@ import os
 import requests
 import pygame
 import socket
+import threading
+import time
 import os
 from dotenv import load_dotenv
-from zeroconf import ServiceInfo, Zeroconf
 
 load_dotenv()
 
@@ -15,6 +16,9 @@ MP3_FOLDER = os.getenv("MP3_FOLDER")
 SERVICE_URL = os.getenv("SERVICE_URL")
 VOICE_ID = os.getenv("VOICE_ID")
 API_KEY = os.getenv("API_KEY")
+MASTER_IP = os.getenv("MASTER_IP")
+MASTER_PORT = os.getenv("MASTER_PORT")
+HOST_IP = socket.gethostname() if os.getenv("HOST_IP") is None else os.getenv("HOST_IP")
 
 if not os.path.exists(MP3_FOLDER):
     os.makedirs(MP3_FOLDER)
@@ -86,33 +90,43 @@ def post_endpoint():
 def discover():
     return jsonify({"message": "Remote Player Service is up!"})
 
-def start_zeroconf_service():
-    service_type = "_http._tcp.local."
-    service_name = "RemotePlayerService._http._tcp.local."
-    service_port = 8000
-    service_properties = {'description': 'Remote Player Service using Flask'}
-
-    #service_name = f"RemotePlayerService-{os.uname().nodename}._http._tcp.local."
-
-    zeroconf = Zeroconf()
-    info = ServiceInfo(
-        service_type,
-        service_name,
-        addresses=[socket.inet_aton("0.0.0.0")],
-        port=service_port,
-        properties=service_properties,
-        server=f"{os.uname().nodename}.local."
-    )
+def register_to_master():
+    url = f"http://{MASTER_IP}:{MASTER_PORT}/register"
+    print(url)
     
-    print(f"Registering service: {service_name}")
-    zeroconf.register_service(info)
-    return zeroconf, info
+    try:
+        response = requests.post(url, json={
+            "name": "player" + socket.gethostname(),
+            "service": "player",
+            "address": socket.gethostbyname(HOST_IP),
+            "port": 8000
+        })
+
+        response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
+
+        print("Registered to master")
+
+    except requests.RequestException:
+        print("Failed to register to master.")
+
+def periodic_register():
+    while True:
+        register_to_master()
+        time.sleep(300)  # sleep for 5 minutes (300 seconds)
+
+print("trying to register to master")
+
+# Start the periodic registration in a separate thread
+thread = threading.Thread(target=periodic_register)
+thread.start()
 
 if __name__ == "__main__":
-    zeroconf_instance, service_info = start_zeroconf_service()
-    try:
-        app.run(host='0.0.0.0', port=8000)
-    finally:
-        zeroconf_instance.unregister_service(service_info)
-        zeroconf_instance.close()
+    
+    # Run the Flask app
+    app.run(host='0.0.0.0', port=8000)
+
+
+
+
+
 

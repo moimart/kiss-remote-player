@@ -1,6 +1,4 @@
-# write the docker file to run this python 3.10.9 app with gunicorn player:app
-
-FROM python:3.10.9-buster
+FROM arm32v7/python:3.10.9-buster
 
 WORKDIR /app
 
