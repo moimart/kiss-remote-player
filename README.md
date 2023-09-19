@@ -7,7 +7,7 @@ This a 'keep-it-simple-stupid" home broadcaster for elevenlabs voices
 
 The use case is very simple: 
 
-*You want to make your favorite AI-voice to announce things at home and you want to do it inexpensively*
+### *You want to make your favorite AI-voice to announce things at home and you want to do it inexpensively*
 
 It contains two containers to be run on Raspberry Pi Zeros or any arm32v7 board with sound capabilities
 

@@ -34,6 +34,8 @@ def health():
 def post_endpoint():
     data = request.get_json()
     input_string = data.get('text', '')
+    
+    custom_voice_id = data.get('voice_id', None)
 
     if not input_string:
         return jsonify({'error': 'text not provided'}), 400
@@ -68,7 +70,12 @@ def post_endpoint():
         'xi-api-key': API_KEY
     }
     
-    url = f"{SERVICE_URL}/v1/text-to-speech/{VOICE_ID}"
+    url = f"{SERVICE_URL}/v1/text-to-speech/"
+    
+    if custom_voice_id is not None:
+        url += f"{custom_voice_id}"
+    else:
+        url += f"{VOICE_ID}"
     
     print(url)
 
