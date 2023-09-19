@@ -50,6 +50,18 @@ Once you have this you can just run docker-compose up -d and the image for the c
 You could run the broadcaster and the player on the same device. All players point to a single broadcaster so adding more broadcasters has no real use. 
 Unless you want to create groups
 
+# Building
+
+If you want to build the containers, just do a normal docker build in the machine:
+
+```
+$ docker build -t player .
+```
+
+BUT I DON'T RECOMMEND THIS AS IT WILL BUILD pygame AND IT WILL TAKE TIME ON YOUR BOARD!!!
+
+Instead, use a container registry (like Github's) and edit the build-arm32v7.sh script pointing to your container registry and it will build and upload it there. Then change the docker-compose to use the image from your container registry accordingly.
+
 # How it's working
 
 Every 5 minutes each player registers itself to the broadcaster. There is no authentication whatsoever as it tries to be very simple. If you want to make it more robust, contributions are welcome 🙂. 

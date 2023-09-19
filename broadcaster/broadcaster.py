@@ -32,7 +32,7 @@ def play():
 
     for name, service in services.items(): 
         threading.Thread(target=make_request, args=(name, service, data)).start()
-        if name == data['name']:
+        if 'name' in data and name == data['name']:
             continue
 
     return jsonify({"message": "Requests are being processed in the background."})
