@@ -3,7 +3,7 @@ kiss-remote-player
 
 # What the heck is this?
 
-This a 'keep-it-simple-stupid" home broadcaster for elevenlabs voices
+This is just a 'keep-it-simple-stupid" home broadcaster for elevenlabs voices
 
 The use case is very simple: 
 
