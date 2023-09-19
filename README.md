@@ -78,7 +78,7 @@ with a JSON payload as such:
 
 { "text": "I'm sorry Dave but I'm afraid I can't do that... ... ... ..." }
 
-Optionally, you can add a key called "name" with the string "player{HOSTNAME}" (substitute {HOSTNAME} with the real text hostname of the player) and it would only play on that player.
+Optionally, you can add a key called "name" with the string "{HOSTNAME}" (substitute {HOSTNAME} with the real text hostname of the player device) and it would only play on that player.
 
 You can also send the same type of *POST* HTTP request (without the optional "name" key) to the url of the player like this:
 

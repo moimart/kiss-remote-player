@@ -30,10 +30,12 @@ def make_request(name, service, data):
 def play():
     data = request.json
 
-    for name, service in services.items(): 
-        threading.Thread(target=make_request, args=(name, service, data)).start()
-        if 'name' in data and name == data['name']:
-            continue
+    if 'name' in data and data['name'] in services:
+        threading.Thread(target=make_request, args=(data['name'], services[data['name']], data)).start()
+    else:
+        for name, service in services.items(): 
+            threading.Thread(target=make_request, args=(name, service, data)).start()
+
 
     return jsonify({"message": "Requests are being processed in the background."})
 

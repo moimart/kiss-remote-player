@@ -100,7 +100,7 @@ def register_to_broadcaster():
     
     try:
         response = requests.post(url, json={
-            "name": "player" + socket.gethostname(),
+            "name": socket.gethostname(),
             "service": "player",
             "address": socket.gethostbyname(HOST_IP),
             "port": 8000
