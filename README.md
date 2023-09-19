@@ -22,7 +22,7 @@ The other container is the broadcaster and it provides a simple http endpoint to
 ## Player
 
 You need an .env file (you can rename .env.sample to it) add the voice id and you API key from elevenlabs. You might
-need to get the voice id querying the elevenlabs API (link to elevenlabs API)
+need to get the voice id querying the [Eleven Labs API](https://api.elevenlabs.io/docs#/voices/Get_voices_v1_voices_get)
 
 Edit the docker-compose and edit the following environment variables:
 
@@ -83,4 +83,7 @@ Optionally, you can add a key called "name" with the string "{HOSTNAME}" (substi
 You can also send the same type of *POST* HTTP request (without the optional "name" key) to the url of the player like this:
 
 http://{IP_ADDRES}:8000/play
+
+Finally, you can add a key "voice_id" with the Elevenlabs' voice ID to override the default voice.
+
 
