@@ -23,7 +23,6 @@ def make_request(name, service, data):
     try:
         requests.post(url, json=data)
     except requests.RequestException as e:
-        # You can log the error if you want
         print(f"Error for service {name}: {e}")
 
 @app.route('/play', methods=['POST'])
