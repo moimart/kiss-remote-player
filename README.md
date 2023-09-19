@@ -64,7 +64,7 @@ Instead, use a container registry (like Github's) and edit the build-arm32v7.sh 
 
 # How it's working
 
-Every 5 minutes each player registers itself to the broadcaster. There is no authentication whatsoever as it tries to be very simple. If you want to make it more robust, contributions are welcome 🙂. 
+Every 5 minutes each player registers itself to the broadcaster. There is no authentication whatsoever as it tries to be very simple. If you want to make it more robust, contributions are welcome 🙂. Don't use this in a public network; Use it in your own private network!!! It's not secure.
 
 Every 5 minutes the broadcaster pings each player to know whether they are alive or not
 
