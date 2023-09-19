@@ -1,0 +1,19 @@
+version: '3'
+
+services:
+  remote_player:
+    image: ghcr.io/moimart/remote_player:latest
+    network_mode: "host"
+    environment:
+      - BROADCASTER_IP=10.20.30.175
+      - BROADCASTER_PORT=8008
+      - PYTHONUNBUFFERED=1
+      - AUDIODEV=default:CARD=S330
+      - HOST_IP=${HOST_IP}
+    volumes:
+      - ./cache:/app/cache
+    devices:
+      - /dev/snd:/dev/snd
+    group_add:
+      - audio
+

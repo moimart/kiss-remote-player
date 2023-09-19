@@ -2,6 +2,7 @@ import socket
 from flask import Flask, request, jsonify
 import requests
 import threading
+import time
 
 services = {}
 
@@ -29,11 +30,34 @@ def make_request(name, service, data):
 def play():
     data = request.json
 
-    for name, service in services.items():
-        # Start a new thread for each request
+    for name, service in services.items(): 
         threading.Thread(target=make_request, args=(name, service, data)).start()
+        if name == data['name']:
+            continue
 
     return jsonify({"message": "Requests are being processed in the background."})
+
+def periodic_check():
+    while True:
+        to_delete = []
+        for name, service in services.items():
+            url = f"http://{service['address']}:{service['port']}/health"
+            try:
+                response = requests.get(url)
+                if response.status_code != 200:
+                    print(f"Service {name} is not responding. Removing from list.")
+                    to_delete.append(name)
+            except requests.RequestException:
+                print(f"Service {name} is not responding. Removing from list.")
+                to_delete.append(name)
+                
+        for name in to_delete:
+            del services[name]        
+        
+        time.sleep(300)  # sleep for 5 minutes (300 seconds)`
+
+thread = threading.Thread(target=periodic_check)
+thread.start()
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000)

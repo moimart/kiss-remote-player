@@ -16,8 +16,8 @@ MP3_FOLDER = os.getenv("MP3_FOLDER")
 SERVICE_URL = os.getenv("SERVICE_URL")
 VOICE_ID = os.getenv("VOICE_ID")
 API_KEY = os.getenv("API_KEY")
-MASTER_IP = os.getenv("MASTER_IP")
-MASTER_PORT = os.getenv("MASTER_PORT")
+BROADCASTER_IP = os.getenv("BROADCASTER_IP")
+BROADCASTER_PORT = os.getenv("BROADCASTER_PORT")
 HOST_IP = socket.gethostname() if os.getenv("HOST_IP") is None else os.getenv("HOST_IP")
 
 if not os.path.exists(MP3_FOLDER):
@@ -25,6 +25,10 @@ if not os.path.exists(MP3_FOLDER):
 
 def sha256_string(input_str):
     return hashlib.sha256(input_str.encode('utf-8')).hexdigest()
+
+@app.route('/health', methods=['GET'])
+def health():
+    return jsonify({"message": "online"})
 
 @app.route('/play', methods=['POST'])
 def post_endpoint():
@@ -90,8 +94,8 @@ def post_endpoint():
 def discover():
     return jsonify({"message": "Remote Player Service is up!"})
 
-def register_to_master():
-    url = f"http://{MASTER_IP}:{MASTER_PORT}/register"
+def register_to_broadcaster():
+    url = f"http://{BROADCASTER_IP}:{BROADCASTER_PORT}/register"
     print(url)
     
     try:
@@ -104,25 +108,20 @@ def register_to_master():
 
         response.raise_for_status()  # Will raise an HTTPError if the HTTP request returned an unsuccessful status code
 
-        print("Registered to master")
+        print("Registered to broadcaster")
 
     except requests.RequestException:
-        print("Failed to register to master.")
+        print("Failed to register to broadcaster.")
 
 def periodic_register():
     while True:
-        register_to_master()
+        register_to_broadcaster()
         time.sleep(300)  # sleep for 5 minutes (300 seconds)
 
-print("trying to register to master")
-
-# Start the periodic registration in a separate thread
 thread = threading.Thread(target=periodic_register)
 thread.start()
 
 if __name__ == "__main__":
-    
-    # Run the Flask app
     app.run(host='0.0.0.0', port=8000)
 
 

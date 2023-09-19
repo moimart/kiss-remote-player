@@ -6,8 +6,8 @@ COPY requirements.txt requirements.txt
 
 RUN pip3 install -r requirements.txt
 
-EXPOSE 8888
+EXPOSE 8008
 
 COPY . .
 
-CMD ["gunicorn", "master:app", "-b", "0.0.0.0:8888"]
+CMD ["gunicorn", "broadcaster:app", "-b", "0.0.0.0:8008"]
