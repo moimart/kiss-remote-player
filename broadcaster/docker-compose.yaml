@@ -4,6 +4,7 @@ services:
   remote_player:
     image: ghcr.io/moimart/remote_broadcaster:latest
     network_mode: "host"
+    restart: always
     environment:
       - PYTHONUNBUFFERED=1
       - HOST_IP=${HOST_IP}

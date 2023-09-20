@@ -3,6 +3,7 @@ version: '3'
 services:
   remote_player:
     image: ghcr.io/moimart/remote_player:latest
+    restart: always
     network_mode: "host"
     environment:
       - BROADCASTER_IP=10.20.30.175
