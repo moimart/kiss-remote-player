@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  remote_player:
+    image: ghcr.io/moimart/assistant_client:latest
+    restart: always
+    network_mode: "host"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - AUDIO_DEVICE_INDEX=2
+      - PORCUPINE_DEVICE_INDEX=0
+      - PORCUPINE_ACCESS_KEY=${PORCUPINE_ACCESS_KEY}
+      - PORCUPINE_KEYWORD=${PORCUPINE_KEYWORD}
+      - PORCUPINE_KEYWORD_PATH=${PORCUPINE_KEYWORD_PATH}
+      - ASSISTANT_HOST=${ASSISTANT_HOST}
+    volumes:
+      - ./cache:/app/cache
+    devices:
+      - /dev/snd:/dev/snd
+    group_add:
+      - audio
+
