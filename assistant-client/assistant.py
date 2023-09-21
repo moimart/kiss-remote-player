@@ -1,4 +1,3 @@
-from porcupine import Porcupine
 from recorder import Recorder
 from soundboard import SoundBoard
 import os
@@ -7,24 +6,18 @@ import base64
 import socket
 import requests
 import threading
-
+from openwakeengine import OpenWakeEngine
 load_dotenv()
-
 class AssistantEngine:
     def __init__(self):
-        load_dotenv()
         
         self.shared_data = None
         
         self.asr_active = False
         
-        self.wake_word_engine = Porcupine(
-        keywords=[os.environ.get("PORCUPINE_KEYWORD")] if os.environ.get("PORCUPINE_KEYWORD") != "" else None,
-        keyword_paths=[os.environ.get("PORCUPINE_KEYWORD_PATH")] if os.environ.get("PORCUPINE_KEYWORD_PATH") != "" else None,
-        access_key=os.environ.get("PORCUPINE_ACCESS_KEY"),
-        sensitivities=[0.9],
-        input_device_index=os.environ.get("PORCUPINE_INPUT_DEVICE_INDEX")
-        )
+        print("Using audio device index {} and porcupine audo device index {}".format(os.environ.get("AUDIO_DEVICE_INDEX"), os.environ.get("PORCUPINE_AUDIO_DEVICE_INDEX")))
+        
+        self.wake_word_engine = OpenWakeEngine('/Users/moimart/Downloads/hey_jarvis_v0.1.onnx', 16000, 'onnx')
         
         self.soundboard = SoundBoard()
 

@@ -6,6 +6,7 @@ pydub==0.25.1
 pvporcupine==2.2.0
 requests==2.28.2
 websockets==11.0.2
-PyYAML==6.0
-PyAudio==0.2.13
+PyYAML==6.0.1
+openwakeword==0.5.1
+```
 
