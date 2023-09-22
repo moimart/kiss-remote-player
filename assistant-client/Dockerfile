@@ -6,10 +6,11 @@ WORKDIR /app
 
 COPY ./requirements.txt ./requirements.txt
 
-RUN apt-get update && apt-get install ffmpeg portaudio19-dev libsmpeg0 pulseaudio alsa-utils libasound2 libasound2-dev libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev -y
+RUN apt-get update && apt-get install cmake gfortran ffmpeg python3-scipy portaudio19-dev libsmpeg0 pulseaudio alsa-utils libasound2 libasound2-dev libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev -y
+RUN pip3 install scikit-build
+RUN apt-get install ninja-build -y
 RUN pip3 install -r requirements.txt
 RUN pip3 install pyaudio
-
 
 COPY . .
 

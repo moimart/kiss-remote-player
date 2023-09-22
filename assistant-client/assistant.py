@@ -12,12 +12,9 @@ class AssistantEngine:
     def __init__(self):
         
         self.shared_data = None
-        
         self.asr_active = False
-        
-        print("Using audio device index {} and porcupine audo device index {}".format(os.environ.get("AUDIO_DEVICE_INDEX"), os.environ.get("PORCUPINE_AUDIO_DEVICE_INDEX")))
-        
-        self.wake_word_engine = OpenWakeEngine('/Users/moimart/Downloads/hey_jarvis_v0.1.onnx', 16000, 'onnx')
+                
+        self.wake_word_engine = OpenWakeEngine(os.environ.get("WAKE_WORD_MODEL"), 16000, 'onnx', int(os.environ.get("AUDIO_DEVICE_INDEX")))
         
         self.soundboard = SoundBoard()
 
