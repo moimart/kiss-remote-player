@@ -5,6 +5,7 @@ import threading
 import time
 import os
 from dotenv import load_dotenv
+import ipaddress
 
 load_dotenv()
 
@@ -12,12 +13,14 @@ services = {}
 
 app = Flask(__name__)
 
-GLOBAL_TOKEN = os.getenv("TOKEN")
-EXTERNAL_DOMAIN = os.getenv("DOMAIN")
+GLOBAL_TOKEN = os.getenv("BROADCASTER_TOKEN")
+ALLOWED_NETWORK = ipaddress.ip_network(os.getenv("ALLOWED_NETWORK"))
 
 @app.route('/register', methods=['POST'])
 def register():
-    if EXTERNAL_DOMAIN in request.host:
+    client_ip = ipaddress.ip_address(request.remote_addr)
+    
+    if client_ip not in ALLOWED_NETWORK:
         # Extract the bearer token from the request headers
         auth_header = request.headers.get('Authorization')
         if auth_header and auth_header.startswith('Bearer '):
@@ -49,8 +52,9 @@ def make_request(name, service, data):
 
 @app.route('/play', methods=['POST'])
 def play():
-    # Check if the request comes from 'martinez.sh'
-    if EXTERNAL_DOMAIN in request.host:
+    client_ip = ipaddress.ip_address(request.remote_addr)
+    
+    if client_ip not in ALLOWED_NETWORK:
         # Extract the bearer token from the request headers
         auth_header = request.headers.get('Authorization')
         if auth_header and auth_header.startswith('Bearer '):

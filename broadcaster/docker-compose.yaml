@@ -8,6 +8,6 @@ services:
     environment:
       - PYTHONUNBUFFERED=1
       - HOST_IP=${HOST_IP}
-      - TOKEN=${TOKEN}
-      - EXTERNAL_DOMAIN=${EXTERNAL_DOMAIN}
+      - BROADCASTER_TOKEN=${BROADCASTER_TOKEN}
+      - ALLOWED_NETWORK=${ALLOWED_NETWORK}
 
