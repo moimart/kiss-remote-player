@@ -1,15 +1,35 @@
 import socket
-from flask import Flask, request, jsonify
+from flask import Flask, request, jsonify, abort
 import requests
 import threading
 import time
+import os
+from dotenv import load_dotenv
+
+load_dotenv()
 
 services = {}
 
 app = Flask(__name__)
 
+GLOBAL_TOKEN = os.getenv("TOKEN")
+EXTERNAL_DOMAIN = os.getenv("DOMAIN")
+
 @app.route('/register', methods=['POST'])
 def register():
+    if EXTERNAL_DOMAIN in request.host:
+        # Extract the bearer token from the request headers
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            # Compare the token to the global variable
+            if token != GLOBAL_TOKEN:
+                # If the token does not match, abort the request
+                abort(401, description="Unauthorized access.")
+        else:
+            # If there's no bearer token in the headers, abort the request
+            abort(401, description="Bearer token is missing.")
+            
     data = request.json
     services[data['name']] = {
         "address": data['address'],
@@ -25,18 +45,23 @@ def make_request(name, service, data):
     except requests.RequestException as e:
         print(f"Error for service {name}: {e}")
 
+
+
 @app.route('/play', methods=['POST'])
 def play():
-    data = request.json
-
-    if 'name' in data and data['name'] in services:
-        threading.Thread(target=make_request, args=(data['name'], services[data['name']], data)).start()
-    else:
-        for name, service in services.items(): 
-            threading.Thread(target=make_request, args=(name, service, data)).start()
-
-
-    return jsonify({"message": "Requests are being processed in the background."})
+    # Check if the request comes from 'martinez.sh'
+    if EXTERNAL_DOMAIN in request.host:
+        # Extract the bearer token from the request headers
+        auth_header = request.headers.get('Authorization')
+        if auth_header and auth_header.startswith('Bearer '):
+            token = auth_header.split(' ')[1]
+            # Compare the token to the global variable
+            if token != GLOBAL_TOKEN:
+                # If the token does not match, abort the request
+                abort(401, description="Unauthorized access.")
+        else:
+            # If there's no bearer token in the headers, abort the request
+            abort(401, description="Bearer token is missing.")
 
 def periodic_check():
     while True:
