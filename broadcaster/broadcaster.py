@@ -28,10 +28,10 @@ def register():
             # Compare the token to the global variable
             if token != GLOBAL_TOKEN:
                 # If the token does not match, abort the request
-                abort(401, description="Unauthorized access.")
+                return jsonify({"message": "Unauthorized"}), 401
         else:
             # If there's no bearer token in the headers, abort the request
-            abort(401, description="Bearer token is missing.")
+            return jsonify({"message": "No bearer token"}), 401
             
     data = request.json
     services[data['name']] = {
@@ -62,10 +62,20 @@ def play():
             # Compare the token to the global variable
             if token != GLOBAL_TOKEN:
                 # If the token does not match, abort the request
-                abort(401, description="Unauthorized access.")
+                return jsonify({"message": "Unauthorized"}), 401
         else:
             # If there's no bearer token in the headers, abort the request
-            abort(401, description="Bearer token is missing.")
+            return jsonify({"message": "No bearer token"}), 401
+        
+    data = request.json
+
+    if 'name' in data and data['name'] in services:
+        threading.Thread(target=make_request, args=(data['name'], services[data['name']], data)).start()
+    else:
+        for name, service in services.items():
+            threading.Thread(target=make_request, args=(name, service, data)).start()
+
+    return jsonify({"message": "Requests are being processed in the background."})
 
 def periodic_check():
     while True:
